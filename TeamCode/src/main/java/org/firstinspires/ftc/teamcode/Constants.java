@@ -9,4 +9,9 @@ public class Constants {
         public static double yInches = 144;
         public static double xInches = 144;
     }
+
+    public static class OdometryWheels {
+        public static double parOffsetMM = 0;
+        public static double perpOffsetMM = 0;
+    }
 }
