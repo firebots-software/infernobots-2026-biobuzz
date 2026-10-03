@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.command.RunCommand;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.jumpypants.murphy.states.StateMachine;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.commandGroups.ShootOnTheMoveCommandGroup;
 
 @Configurable
 public class BaseTeleOp extends LinearOpMode {
@@ -25,8 +29,34 @@ public class BaseTeleOp extends LinearOpMode {
         CommandScheduler.getInstance().reset();
         CommandScheduler.getInstance().registerSubsystem(
                 robotContext.driveSubsystem,
-                robotContext.odometrySubsystem
+                robotContext.odometrySubsystem,
+                robotContext.shooterSubsystem
         );
+
+        // Set default command for driveSubsystem (runs whenever no other command requires driveSubsystem)
+        robotContext.driveSubsystem.setDefaultCommand(
+                new RunCommand(
+                        () -> robotContext.driveSubsystem.driveFieldCentric(
+                                Math.pow(gamepad1.left_stick_x, 3),
+                                Math.pow(-gamepad1.left_stick_y, 3),
+                                Math.pow(-gamepad1.right_stick_x, 3)
+                        ),
+                        robotContext.driveSubsystem
+                )
+        );
+
+        ShootOnTheMoveCommandGroup shootOnTheMoveCommandGroup = new ShootOnTheMoveCommandGroup(
+                robotContext.shooterSubsystem,
+                robotContext.driveSubsystem,
+                robotContext.odometrySubsystem,
+                telemetry,
+                () -> Math.pow(gamepad1.left_stick_x, 3),
+                () -> Math.pow(-gamepad1.left_stick_y, 3)
+        );
+
+        // Bind ShootOnTheMoveCommandGroup to gamepad1 right trigger
+        new Trigger(() -> gamepad1.right_trigger > 0.2)
+                .whileActiveContinuous(shootOnTheMoveCommandGroup);
 
         Pose startingPose = new Pose(0, 0, Math.PI / 2);
         robotContext.driveSubsystem.setStartingPose(startingPose);
@@ -48,12 +78,6 @@ public class BaseTeleOp extends LinearOpMode {
             if (gamepad1.triangle) {
                 robotContext.driveSubsystem.setPose(startingPose);
             }
-
-            robotContext.driveSubsystem.driveFieldCentric(
-                    Math.pow(gamepad1.left_stick_x, 3),
-                    Math.pow(-gamepad1.left_stick_y, 3),
-                    Math.pow(-gamepad1.right_stick_x, 3)
-            );
 
             telemetry.addData("x pos", currentPose.getX());
             telemetry.addData("y pos", currentPose.getY());

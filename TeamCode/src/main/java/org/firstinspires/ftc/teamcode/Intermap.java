@@ -12,6 +12,16 @@ public class Intermap {
         keys.add(k);
         values.add(v);
     }
+
+    public boolean isEmpty() {
+        return keys.isEmpty();
+    }
+
+    public void clear() {
+        keys.clear();
+        values.clear();
+    }
+
     // Simple bubble sort to keep keys and values in sync
     private void sort(ArrayList<Double> keys, ArrayList<Double> values) {
         for (int i = 0; i < keys.size() - 1; i++) {
@@ -26,6 +36,14 @@ public class Intermap {
                 }
             }
         }
+    }
+
+    // Get interpolated value with default fallback if empty
+    public double get(double key, double defaultValue) {
+        if (keys.isEmpty()) {
+            return defaultValue;
+        }
+        return get(key);
     }
 
     // Get interpolated value
