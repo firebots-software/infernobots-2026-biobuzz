@@ -14,4 +14,10 @@ public class Constants {
         public static double parOffsetMM = 0;
         public static double perpOffsetMM = 0;
     }
+
+    public static class Intake {
+        public static String motorName = "intake";
+        public static double intakePower = 1.0;
+        public static double outtakePower = -0.7;
+    }
 }
