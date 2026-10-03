@@ -1,20 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.arcrobotics.ftclib.command.Subsystem;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.LimelightLocalizer;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 public class DriveSubsystem implements Subsystem {
-    Follower follower;
+    private final Follower follower;
+
+    public DriveSubsystem(HardwareMap hardwareMap) {
+        follower = Constants.createFollower(hardwareMap);
+    }
 
     public DriveSubsystem() {
-        follower = Constants.createFollower(hardwareMap);
+        this(org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap);
+    }
+
+    public Follower getFollower() {
+        return follower;
     }
 
     public void driveFieldCentric(double x, double y, double omega) {
@@ -42,6 +47,7 @@ public class DriveSubsystem implements Subsystem {
     public void switchToTeleOp() {
         follower.startTeleopDrive();
     }
+
     @Override
     public void periodic() {
         follower.update();

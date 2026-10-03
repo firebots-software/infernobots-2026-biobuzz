@@ -5,18 +5,12 @@ import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.jumpypants.murphy.states.StateMachine;
-import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 @Configurable
 public class BaseTeleOp extends LinearOpMode {
     StateMachine stateMachine;
-
-    DriveSubsystem driveSubsystem = new DriveSubsystem();
 
     @Override
     public void runOpMode() {
@@ -28,25 +22,34 @@ public class BaseTeleOp extends LinearOpMode {
         );
         TelemetryManager telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
-        waitForStart();
+        CommandScheduler.getInstance().reset();
+        CommandScheduler.getInstance().registerSubsystem(
+                robotContext.driveSubsystem,
+                robotContext.odometrySubsystem
+        );
 
         Pose startingPose = new Pose(0, 0, Math.PI / 2);
-        driveSubsystem.setStartingPose(startingPose);
+        robotContext.driveSubsystem.setStartingPose(startingPose);
 
-        driveSubsystem.switchToTeleOp();
+        waitForStart();
 
-        while (opModeIsActive()){
+        robotContext.driveSubsystem.switchToTeleOp();
+
+        while (opModeIsActive()) {
             CommandScheduler.getInstance().run();
 
-            stateMachine.step();
-
-            Pose currentPose = driveSubsystem.getPose();
-
-            if (gamepad1.triangle) {
-                driveSubsystem.setPose(startingPose);
+            if (stateMachine != null) {
+                stateMachine.step();
             }
 
-            driveSubsystem.driveFieldCentric(
+            Pose currentPose = robotContext.driveSubsystem.getPose();
+            Pose odoPose = robotContext.odometrySubsystem.getWeightedPose();
+
+            if (gamepad1.triangle) {
+                robotContext.driveSubsystem.setPose(startingPose);
+            }
+
+            robotContext.driveSubsystem.driveFieldCentric(
                     Math.pow(gamepad1.left_stick_x, 3),
                     Math.pow(-gamepad1.left_stick_y, 3),
                     Math.pow(-gamepad1.right_stick_x, 3)
@@ -55,6 +58,12 @@ public class BaseTeleOp extends LinearOpMode {
             telemetry.addData("x pos", currentPose.getX());
             telemetry.addData("y pos", currentPose.getY());
             telemetry.addData("heading pos", currentPose.getHeading());
+
+            if (odoPose != null) {
+                telemetry.addData("odo x pos", odoPose.getX());
+                telemetry.addData("odo y pos", odoPose.getY());
+                telemetry.addData("odo heading pos", odoPose.getHeading());
+            }
 
             telemetry.update();
         }

@@ -1,50 +1,45 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.arcrobotics.ftclib.command.Subsystem;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.LimelightLocalizer;
-
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.LimelightLocalizer;
 
 public class OdometrySubsystem implements Subsystem {
-    LimelightLocalizer limelight = new LimelightLocalizer(hardwareMap.get(Limelight3A.class, "cam"));
-    GoBildaPinpointDriver odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+    private final LimelightLocalizer limelight;
+    private final GoBildaPinpointDriver odo;
 
     private double limeLightConfidence = 0f;
 
-    public OdometrySubsystem() {
-        GoBildaPinpointDriver odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+    public OdometrySubsystem(HardwareMap hardwareMap) {
+        this.limelight = new LimelightLocalizer(hardwareMap.get(Limelight3A.class, "cam"));
+        this.odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
 
-        // 2. Set encoder resolution (e.g., ticks per mm for goBILDA pods)
-        // GoBildaOdometryPods.goBILDA_4_BAR_POD = 19.20531005221992
-        // GoBildaOdometryPods.goBILDA_SWINGARM_POD = 13.26291192
+        // Set encoder resolution (e.g., ticks per mm for goBILDA pods)
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 
-        // 3. Set the physical offsets of your pods relative to the robot's center (in mm)
-        // parOffset: distance from center to parallel wheel (positive = left)
-        // perpOffset: distance from center to perpendicular wheel (positive = forward/back)
+        // Set physical offsets of pods relative to center (in mm)
         odo.setOffsets(Constants.OdometryWheels.parOffsetMM, Constants.OdometryWheels.perpOffsetMM, DistanceUnit.MM);
 
-        // 4. Match your structural encoder wiring directions
+        // Match structural encoder wiring directions
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.FORWARD);
+    }
 
-        // 5. Optionally reset the position at autonomous start
-        // odo.resetPosAndIMU();
+    public OdometrySubsystem() {
+        this(org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap);
     }
 
     public Pose getWeightedPose() {
         return new Pose(limelight.getLimelightPose().getPosition().x * limeLightConfidence + odo.getPosX(DistanceUnit.METER) * (1-limeLightConfidence),
                         limelight.getLimelightPose().getPosition().y * limeLightConfidence + odo.getPosX(DistanceUnit.METER) * (1-limeLightConfidence),
-                   limelight.getLimelightPose().getOrientation().getYaw() * limeLightConfidence + odo.getHeading(AngleUnit.RADIANS) * (1-limeLightConfidence));
+                        limelight.getLimelightPose().getOrientation().getYaw() * limeLightConfidence + odo.getHeading(AngleUnit.RADIANS) * (1-limeLightConfidence));
     }
 
     public Pose velocityVectorMetersPerSecond() {
@@ -53,5 +48,10 @@ public class OdometrySubsystem implements Subsystem {
 
     public void updateOdo() {
         odo.update();
+    }
+
+    @Override
+    public void periodic() {
+        updateOdo();
     }
 }
