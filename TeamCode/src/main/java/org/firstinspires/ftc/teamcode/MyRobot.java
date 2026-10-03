@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.OdometrySubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 /**
  * MyRobot class that extends RobotContext to include robot-specific subsystems.
@@ -18,6 +19,7 @@ public class MyRobot extends RobotContext {
     public final HardwareMap HARDWARE_MAP;
     public final DriveSubsystem driveSubsystem;
     public final OdometrySubsystem odometrySubsystem;
+    public final ShooterSubsystem shooterSubsystem;
 
     /**
      * Creates a new RobotContext with the specified hardware map, telemetry and gamepad references.
@@ -33,6 +35,7 @@ public class MyRobot extends RobotContext {
         this.HARDWARE_MAP = hardwareMap;
         this.driveSubsystem = new DriveSubsystem(hardwareMap);
         this.odometrySubsystem = new OdometrySubsystem(hardwareMap);
+        this.shooterSubsystem = new ShooterSubsystem(hardwareMap);
         follower = driveSubsystem.getFollower();
     }
 }
