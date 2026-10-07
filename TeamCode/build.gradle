@@ -27,4 +27,90 @@ dependencies {
     implementation project(':FtcRobotController')
     implementation 'com.github.Jumpypants:Murphy:v4.1.2'
     implementation 'org.ftclib.ftclib:core:2.1.1' // core
+
+    attributesSchema {
+        attribute(Attribute.of('artifactType', String)) {
+            disambiguationRules.add(ArtifactTypeDisambiguationRule)
+        }
+    }
 }
+
+class ArtifactTypeDisambiguationRule implements AttributeDisambiguationRule<String> {
+    @Override
+    void execute(MultipleCandidatesDetails<String> details) {
+        if (details.candidateValues.contains("android-classes-directory")) {
+            details.closestMatch("android-classes-directory")
+        } else if (details.candidateValues.contains("android-classes-jar")) {
+            details.closestMatch("android-classes-jar")
+        } else if (details.candidateValues.contains("jar")) {
+            details.closestMatch("jar")
+        }
+    }
+}
+
+
+def buildDirFile = layout.buildDirectory.get().asFile
+def classesDir = file("${buildDirFile}/intermediates/javac/debug/compileDebugJavaWithJavac/classes")
+
+def getRuntimeClasspath = {
+    def runtimeConfig = configurations.findByName('debugRuntimeClasspath')
+    if (!runtimeConfig) return files()
+    try {
+        return runtimeConfig.incoming.artifactView {
+            attributes {
+                attribute(Attribute.of('artifactType', String), 'android-classes-jar')
+            }
+        }.files
+    } catch (Exception e) {
+        return runtimeConfig
+    }
+}
+
+def getCompileClasspath = {
+    def compileConfig = configurations.findByName('debugCompileClasspath')
+    if (!compileConfig) return files()
+    try {
+        return compileConfig.incoming.artifactView {
+            attributes {
+                attribute(Attribute.of('artifactType', String), 'android-classes-jar')
+            }
+        }.files
+    } catch (Exception e) {
+        return compileConfig
+    }
+}
+
+def mainSourceSet = [
+    output: [
+        classesDirs: files(classesDir),
+        resourcesDir: classesDir
+    ],
+    runtimeClasspath: files({
+        files(android.bootClasspath) +
+        files(classesDir) +
+        getRuntimeClasspath()
+    }),
+    compileClasspath: files({
+        files(android.bootClasspath) +
+        getCompileClasspath()
+    })
+]
+
+project.ext.sourceSets = [
+    main: mainSourceSet,
+    findByName: { name -> name == 'main' ? mainSourceSet : null },
+    getByName: { name -> name == 'main' ? mainSourceSet : null },
+    getAt: { name -> name == 'main' ? mainSourceSet : null }
+]
+
+tasks.register('classes') {
+    dependsOn 'compileDebugJavaWithJavac'
+}
+
+tasks.register('runCameraTesting', JavaExec) {
+    dependsOn 'compileDebugJavaWithJavac'
+    mainClass = 'org.firstinspires.ftc.teamcode.CameraTesting'
+    classpath = project.ext.sourceSets.main.runtimeClasspath
+}
+
+

@@ -31,8 +31,10 @@ public class LimelightLocalizer {
             // Retrieve the 3D field-space bot pose
             Pose3D botpose = result.getBotpose();
 
-            // Output the string representation to the driver station
-            telemetry.addData("Botpose", botpose.toString());
+            // Output the string representation to the driver station if telemetry is available
+            if (telemetry != null) {
+                telemetry.addData("Botpose", botpose.toString());
+            }
 
             return botpose;
         }
@@ -46,9 +48,10 @@ public class LimelightLocalizer {
             // Retrieve the 3D field-space bot pose
             Pose3D botpose = result.getBotpose();
 
-            // Output the string representation to the driver station
-            telemetry.addData("Botpose", botpose.toString());
-
+            // Output the string representation to the driver station if telemetry is available
+            if (telemetry != null) {
+                telemetry.addData("Botpose", botpose.toString());
+            }
         }
     }
 
