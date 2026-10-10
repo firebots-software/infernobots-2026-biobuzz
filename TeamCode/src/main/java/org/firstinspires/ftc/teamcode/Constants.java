@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 
 public class Constants {
@@ -30,5 +31,26 @@ public class Constants {
         // Fallback values if Intermaps are unpopulated
         public static double defaultSpeed = 2000.0; // ticks/sec or RPM
         public static double defaultTimeOfFlight = 0.5; // seconds
+    }
+
+    public static class Transfer {
+        public static double defaultPower = 1.0;
+    }
+
+    public static class RobotOffSet {
+        public static double X_Nudge = 0;
+        public static double Y_Nudge = 0;
+        public static double X_Scale = 1;
+        public static double Y_Scale = 1;
+    }
+
+    @Configurable
+    public static class Limelight {
+        public static double FIELD_LENGTH_IN = 144.0;
+        public static double FIELD_WIDTH_IN = 144.0;
+        public static double X_NUDGE = 0.0;
+        public static double Y_NUDGE = 0.0;
+        public static double X_SCALE = 1.0;
+        public static double Y_SCALE = 1.0;
     }
 }
