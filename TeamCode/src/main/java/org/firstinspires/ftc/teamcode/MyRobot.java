@@ -19,9 +19,9 @@ public class MyRobot extends RobotContext {
 
     public final HardwareMap HARDWARE_MAP;
     public final DriveSubsystem driveSubsystem;
-    public final OdometrySubsystem odometrySubsystem;
-    public final ShooterSubsystem shooterSubsystem;
-    public final IntakeSubsystem intakeSubsystem;
+//    public final OdometrySubsystem odometrySubsystem;
+//    public final ShooterSubsystem shooterSubsystem;
+//    public final IntakeSubsystem intakeSubsystem;
 
     /**
      * Creates a new RobotContext with the specified hardware map, telemetry and gamepad references.
@@ -36,9 +36,9 @@ public class MyRobot extends RobotContext {
         super(telemetry, gamepad1, gamepad2);
         this.HARDWARE_MAP = hardwareMap;
         this.driveSubsystem = new DriveSubsystem(hardwareMap);
-        this.odometrySubsystem = new OdometrySubsystem(hardwareMap);
-        this.shooterSubsystem = new ShooterSubsystem(hardwareMap);
-        this.intakeSubsystem = new IntakeSubsystem(hardwareMap);
+//        this.odometrySubsystem = new OdometrySubsystem(hardwareMap);
+//        this.shooterSubsystem = new ShooterSubsystem(hardwareMap);
+//        this.intakeSubsystem = new IntakeSubsystem(hardwareMap);
         follower = driveSubsystem.getFollower();
     }
 }
