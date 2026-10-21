@@ -9,11 +9,16 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.jumpypants.murphy.states.StateMachine;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commandGroups.ShootOnTheMoveCommandGroup;
+import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
 @Configurable
-public class BaseTeleOp extends LinearOpMode {
+@TeleOp(name="(TELE) Main", group="Main")
+public class MainTeleOp extends LinearOpMode {
+    public static IntakeSubsystem.TeamColor ALLIANCE_COLOR = IntakeSubsystem.TeamColor.RED;
     StateMachine stateMachine;
 
     @Override
@@ -26,11 +31,15 @@ public class BaseTeleOp extends LinearOpMode {
         );
         TelemetryManager telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
+        // Configure alliance color for intake subsystem and other team-specific features
+        robotContext.intakeSubsystem.setTeamColor(ALLIANCE_COLOR);
+
         CommandScheduler.getInstance().reset();
         CommandScheduler.getInstance().registerSubsystem(
                 robotContext.driveSubsystem,
                 robotContext.odometrySubsystem,
-                robotContext.shooterSubsystem
+                robotContext.shooterSubsystem,
+                robotContext.intakeSubsystem
         );
 
         // Set default command for driveSubsystem (runs whenever no other command requires driveSubsystem)
@@ -58,6 +67,10 @@ public class BaseTeleOp extends LinearOpMode {
         new Trigger(() -> gamepad1.right_trigger > 0.2)
                 .whileActiveContinuous(shootOnTheMoveCommandGroup);
 
+        // Bind IntakeCommand to gamepad1 left trigger
+        new Trigger(() -> gamepad1.left_trigger > 0.2)
+                .whileActiveContinuous(new IntakeCommand(robotContext.intakeSubsystem));
+
         Pose startingPose = new Pose(0, 0, Math.PI / 2);
         robotContext.driveSubsystem.setStartingPose(startingPose);
 
@@ -79,6 +92,8 @@ public class BaseTeleOp extends LinearOpMode {
                 robotContext.driveSubsystem.setPose(startingPose);
             }
 
+            telemetry.addData("Alliance Color", ALLIANCE_COLOR);
+            telemetry.addData("Enemy Ball Detected", robotContext.intakeSubsystem.isEnemyBallDetected());
             telemetry.addData("x pos", currentPose.getX());
             telemetry.addData("y pos", currentPose.getY());
             telemetry.addData("heading pos", currentPose.getHeading());
