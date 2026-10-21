@@ -1,17 +1,25 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-
 import com.arcrobotics.ftclib.command.Subsystem;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Constants;
+
+/**
+ * Subsystem for the intake mechanism.
+ */
 public class IntakeSubsystem implements Subsystem {
     private final DcMotorEx intakeMotor;
 
-    public IntakeSubsystem() {
+    public IntakeSubsystem(HardwareMap hardwareMap) {
         intakeMotor = hardwareMap.get(DcMotorEx.class, Constants.Intake.motorName);
-        intakeMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setDirection(Constants.Intake.motorDirection);
+        intakeMotor.setZeroPowerBehavior(Constants.Intake.zeroPowerBehavior);
+    }
+
+    public IntakeSubsystem() {
+        this(org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap);
     }
 
     /**
@@ -37,6 +45,5 @@ public class IntakeSubsystem implements Subsystem {
 
     @Override
     public void periodic() {
-        // Use this for telemetry or safety logic if needed
     }
 }
