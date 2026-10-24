@@ -9,11 +9,13 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.jumpypants.murphy.states.StateMachine;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commandGroups.ShootOnTheMoveCommandGroup;
 
 @Configurable
-public class BaseTeleOp extends LinearOpMode {
+@TeleOp(name="(TELE) Main", group="Main")
+public class MainTeleOp extends LinearOpMode {
     StateMachine stateMachine;
 
     @Override
@@ -28,9 +30,7 @@ public class BaseTeleOp extends LinearOpMode {
 
         CommandScheduler.getInstance().reset();
         CommandScheduler.getInstance().registerSubsystem(
-                robotContext.driveSubsystem,
-                robotContext.odometrySubsystem,
-                robotContext.shooterSubsystem
+                robotContext.driveSubsystem
         );
 
         // Set default command for driveSubsystem (runs whenever no other command requires driveSubsystem)
@@ -45,18 +45,18 @@ public class BaseTeleOp extends LinearOpMode {
                 )
         );
 
-        ShootOnTheMoveCommandGroup shootOnTheMoveCommandGroup = new ShootOnTheMoveCommandGroup(
-                robotContext.shooterSubsystem,
-                robotContext.driveSubsystem,
-                robotContext.odometrySubsystem,
-                telemetry,
-                () -> Math.pow(gamepad1.left_stick_x, 3),
-                () -> Math.pow(-gamepad1.left_stick_y, 3)
-        );
+//        ShootOnTheMoveCommandGroup shootOnTheMoveCommandGroup = new ShootOnTheMoveCommandGroup(
+//                robotContext.shooterSubsystem,
+//                robotContext.driveSubsystem,
+//                robotContext.odometrySubsystem,
+//                telemetry,
+//                () -> Math.pow(gamepad1.left_stick_x, 3),
+//                () -> Math.pow(-gamepad1.left_stick_y, 3)
+//        );
 
         // Bind ShootOnTheMoveCommandGroup to gamepad1 right trigger
-        new Trigger(() -> gamepad1.right_trigger > 0.2)
-                .whileActiveContinuous(shootOnTheMoveCommandGroup);
+//        new Trigger(() -> gamepad1.right_trigger > 0.2)
+//                .whileActiveContinuous(shootOnTheMoveCommandGroup);
 
         Pose startingPose = new Pose(0, 0, Math.PI / 2);
         robotContext.driveSubsystem.setStartingPose(startingPose);
@@ -72,24 +72,24 @@ public class BaseTeleOp extends LinearOpMode {
                 stateMachine.step();
             }
 
-            Pose currentPose = robotContext.driveSubsystem.getPose();
-            Pose odoPose = robotContext.odometrySubsystem.getWeightedPose();
+//            Pose currentPose = robotContext.driveSubsystem.getPose();
+//            Pose odoPose = robotContext.odometrySubsystem.getWeightedPose();
+//
+//            if (gamepad1.triangle) {
+//                robotContext.driveSubsystem.setPose(startingPose);
+//            }
+//
+//            telemetry.addData("x pos", currentPose.getX());
+//            telemetry.addData("y pos", currentPose.getY());
+//            telemetry.addData("heading pos", currentPose.getHeading());
 
-            if (gamepad1.triangle) {
-                robotContext.driveSubsystem.setPose(startingPose);
-            }
+//            if (odoPose != null) {
+//                telemetry.addData("odo x pos", odoPose.getX());
+//                telemetry.addData("odo y pos", odoPose.getY());
+//                telemetry.addData("odo heading pos", odoPose.getHeading());
+//            }
 
-            telemetry.addData("x pos", currentPose.getX());
-            telemetry.addData("y pos", currentPose.getY());
-            telemetry.addData("heading pos", currentPose.getHeading());
-
-            if (odoPose != null) {
-                telemetry.addData("odo x pos", odoPose.getX());
-                telemetry.addData("odo y pos", odoPose.getY());
-                telemetry.addData("odo heading pos", odoPose.getHeading());
-            }
-
-            telemetry.update();
+//            telemetry.update();
         }
     }
 }
