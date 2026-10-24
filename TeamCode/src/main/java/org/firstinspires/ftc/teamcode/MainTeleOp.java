@@ -32,14 +32,14 @@ public class MainTeleOp extends LinearOpMode {
         TelemetryManager telemetryM = PanelsTelemetry.INSTANCE.getTelemetry();
 
         // Configure alliance color for intake subsystem and other team-specific features
-        robotContext.intakeSubsystem.setTeamColor(ALLIANCE_COLOR);
+//        robotContext.intakeSubsystem.setTeamColor(ALLIANCE_COLOR);
 
         CommandScheduler.getInstance().reset();
         CommandScheduler.getInstance().registerSubsystem(
-                robotContext.driveSubsystem,
-                robotContext.odometrySubsystem,
-                robotContext.shooterSubsystem,
-                robotContext.intakeSubsystem
+                robotContext.driveSubsystem
+//                robotContext.odometrySubsystem,
+//                robotContext.shooterSubsystem,
+//                robotContext.intakeSubsystem
         );
 
         // Set default command for driveSubsystem (runs whenever no other command requires driveSubsystem)
@@ -54,22 +54,22 @@ public class MainTeleOp extends LinearOpMode {
                 )
         );
 
-        ShootOnTheMoveCommandGroup shootOnTheMoveCommandGroup = new ShootOnTheMoveCommandGroup(
-                robotContext.shooterSubsystem,
-                robotContext.driveSubsystem,
-                robotContext.odometrySubsystem,
-                telemetry,
-                () -> Math.pow(gamepad1.left_stick_x, 3),
-                () -> Math.pow(-gamepad1.left_stick_y, 3)
-        );
+//        ShootOnTheMoveCommandGroup shootOnTheMoveCommandGroup = new ShootOnTheMoveCommandGroup(
+//                robotContext.shooterSubsystem,
+//                robotContext.driveSubsystem,
+//                robotContext.odometrySubsystem,
+//                telemetry,
+//                () -> Math.pow(gamepad1.left_stick_x, 3),
+//                () -> Math.pow(-gamepad1.left_stick_y, 3)
+//        );
 
         // Bind ShootOnTheMoveCommandGroup to gamepad1 right trigger
-        new Trigger(() -> gamepad1.right_trigger > 0.2)
-                .whileActiveContinuous(shootOnTheMoveCommandGroup);
-
-        // Bind IntakeCommand to gamepad1 left trigger
-        new Trigger(() -> gamepad1.left_trigger > 0.2)
-                .whileActiveContinuous(new IntakeCommand(robotContext.intakeSubsystem));
+//        new Trigger(() -> gamepad1.right_trigger > 0.2)
+//                .whileActiveContinuous(shootOnTheMoveCommandGroup);
+//
+//        // Bind IntakeCommand to gamepad1 left trigger
+//        new Trigger(() -> gamepad1.left_trigger > 0.2)
+//                .whileActiveContinuous(new IntakeCommand(robotContext.intakeSubsystem));
 
         Pose startingPose = new Pose(0, 0, Math.PI / 2);
         robotContext.driveSubsystem.setStartingPose(startingPose);
@@ -86,23 +86,23 @@ public class MainTeleOp extends LinearOpMode {
             }
 
             Pose currentPose = robotContext.driveSubsystem.getPose();
-            Pose odoPose = robotContext.odometrySubsystem.getWeightedPose();
+//            Pose odoPose = robotContext.odometrySubsystem.getWeightedPose();
 
             if (gamepad1.triangle) {
                 robotContext.driveSubsystem.setPose(startingPose);
             }
 
             telemetry.addData("Alliance Color", ALLIANCE_COLOR);
-            telemetry.addData("Enemy Ball Detected", robotContext.intakeSubsystem.isEnemyBallDetected());
+//            telemetry.addData("Enemy Ball Detected", robotContext.intakeSubsystem.isEnemyBallDetected());
             telemetry.addData("x pos", currentPose.getX());
             telemetry.addData("y pos", currentPose.getY());
             telemetry.addData("heading pos", currentPose.getHeading());
 
-            if (odoPose != null) {
-                telemetry.addData("odo x pos", odoPose.getX());
-                telemetry.addData("odo y pos", odoPose.getY());
-                telemetry.addData("odo heading pos", odoPose.getHeading());
-            }
+//            if (odoPose != null) {
+//                telemetry.addData("odo x pos", odoPose.getX());
+//                telemetry.addData("odo y pos", odoPose.getY());
+//                telemetry.addData("odo heading pos", odoPose.getHeading());
+//            }
 
             telemetry.update();
         }
