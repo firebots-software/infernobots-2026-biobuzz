@@ -22,7 +22,7 @@ public class PointToVirtualTargetCommand extends CommandBase {
     private final DoubleSupplier driverYSupplier;
     private final Telemetry telemetry;
 
-    private double kP = 1.5; // Proportional gain for heading control
+    private double kP = Constants.AutoAim.kP; // Proportional gain for heading control from centralized constants
     private ShootingTargetInfo lastTargetInfo;
 
     public PointToVirtualTargetCommand(
