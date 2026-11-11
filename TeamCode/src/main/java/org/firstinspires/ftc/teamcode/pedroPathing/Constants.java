@@ -38,7 +38,7 @@ public class Constants {
             .strafeEncoderDirection(Encoder.REVERSE);
 
     public static PinpointConstants pinpointConstants = new PinpointConstants()
-            .strafePodX(0.89)
+            .strafePodX(-0.89)
             .forwardPodY(3.25);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
