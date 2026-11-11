@@ -11,14 +11,14 @@ import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commandGroups.ShootOnTheMoveCommandGroup;
-import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.commandGroups.ShootOnTheMoveCommandGroup;
+//import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
+//import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
 @Configurable
 @TeleOp(name="(TELE) Main", group="Main")
 public class MainTeleOp extends LinearOpMode {
-    public static IntakeSubsystem.TeamColor ALLIANCE_COLOR = IntakeSubsystem.TeamColor.RED;
+    // public static IntakeSubsystem.TeamColor ALLIANCE_COLOR = IntakeSubsystem.TeamColor.RED;
     StateMachine stateMachine;
 
     @Override
@@ -47,7 +47,7 @@ public class MainTeleOp extends LinearOpMode {
                 new RunCommand(
                         () -> robotContext.driveSubsystem.driveFieldCentric(
                                 Math.pow(gamepad1.left_stick_x, 3),
-                                Math.pow(-gamepad1.left_stick_y, 3),
+                                Math.pow(gamepad1.left_stick_y, 3),
                                 Math.pow(-gamepad1.right_stick_x, 3)
                         ),
                         robotContext.driveSubsystem
@@ -92,7 +92,7 @@ public class MainTeleOp extends LinearOpMode {
                 robotContext.driveSubsystem.setPose(startingPose);
             }
 
-            telemetry.addData("Alliance Color", ALLIANCE_COLOR);
+            // telemetry.addData("Alliance Color", ALLIANCE_COLOR);
 //            telemetry.addData("Enemy Ball Detected", robotContext.intakeSubsystem.isEnemyBallDetected());
             telemetry.addData("x pos", currentPose.getX());
             telemetry.addData("y pos", currentPose.getY());

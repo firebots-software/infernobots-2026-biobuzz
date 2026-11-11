@@ -7,9 +7,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.OdometrySubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.OdometrySubsystem;
+//import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 /**
  * MyRobot class that extends RobotContext to include robot-specific subsystems.
